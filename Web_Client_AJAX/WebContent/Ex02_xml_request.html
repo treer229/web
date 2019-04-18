@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script>
+
+	var httpReq=null;
+	
+	function getInstance(){
+	if(window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	}else if(window.ActiveXObject){ //IE6
+		xhr = new ActiveXObject("Msxml12.XMLHTTP");
+	}else{
+		throw new Error("Ajax 를 지원하지 않습니다");
+	}
+		return httpReq;
+	}
+	
+	function handlerStateChange(){
+		if(httpReq.readyState == 4){ //서버에서 응답이 왔다면
+			if(httpReq.status >= 200 && httpReq.status <300){
+				document.getElementById("container").innerHTML = httpReq.response
+			}
+		}
+	}
+	
+	function sendData() {
+		httpReq = getInstance();
+		httpReq.onreadystatechange = handlerStateChange; //주의 hadlerStateChange() > X
+		httpReq.open("GET","Ex01_resource.html"); //form 구성
+		httpReq.send();
+	}
+</script>
+
+<body>
+	<h3>이미지</h3>
+	<img src="images/1.png" style="width: 150px; height: 150px">
+	
+	<h3>비동기(Ajax)</h3>
+	<input type="button" value="비동기처리" onclick="sendData()">
+	<div id="container">first data Load</div>
+	
+	<h3>동기식 데이터 처리</h3>
+	<a href="Ex01_resource.html">서버 데이터 요청</a>
+</body>
+</html>

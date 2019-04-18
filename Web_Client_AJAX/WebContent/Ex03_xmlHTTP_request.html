@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script>
+
+	var httpReq=null;
+	
+	function getInstance(){
+	if(window.XMLHttpRequest){
+		httpReq = new XMLHttpRequest();
+	}else if(window.ActiveXObject){ //IE6
+		httpReq = new ActiveXObject("Msxml12.XMLHTTP");
+	}else{
+		throw new Error("Ajax 를 지원하지 않습니다");
+	}
+		return httpReq;
+	}
+	
+	function handlerStateChange(){
+		if(httpReq.readyState == 4){ //서버에서 응답이 왔다면
+			if(httpReq.status >= 200 && httpReq.status <300){
+				//서버에 받은 데이터를 가공(point)
+				//text(text,html)
+				//xml
+				var TempArray = new Array();
+				TempArray = httpReq.responseText.split(",");
+				
+				var printdata ="";
+				for(var i=0; i< TempArray.length; i++){
+					printdata += TempArray[i].trim()+"<br>";
+				}
+				
+				var view = document.getElementById("div_view");
+				view.innerHTML = printdata;
+			}
+		}
+	}
+	
+	function sendData() {
+		httpReq = getInstance();
+		httpReq.onreadystatechange = handlerStateChange; //주의 hadlerStateChange() > X
+		
+		var key = document.getElementById("select_menu").selectedIndex;
+		//key변수 > 0 or 1 or 2 
+		httpReq.open("POST","Ex03_Server_param.jsp?no="+key); //form 구성
+		//
+		httpReq.send();
+	}
+</script>
+
+<body>
+	<h3>Ajax(xmlHttpRequest 객체 사용)</h3>
+	<div style="background-color: gray; width: 500px; text-align: center">ㅎㅇ
+		<hr style= "color: red">
+		<select id="select_menu" onchange="sendData()">
+			<option>0번 index</option>
+			<option>1번 index</option>
+			<option>2번 index</option>
+		</select>
+			<br>
+			<span id="div_view"></span>
+	</div>
+
+</body>
+</html>

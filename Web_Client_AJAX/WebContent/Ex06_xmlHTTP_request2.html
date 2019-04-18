@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script>
+
+	var httpReq=null;
+	
+	function getInstance(){
+	if(window.XMLHttpRequest){
+		httpReq = new XMLHttpRequest();
+	}else if(window.ActiveXObject){ //IE6
+		httpReq = new ActiveXObject("Msxml12.XMLHTTP");
+	}else{
+		throw new Error("Ajax 를 지원하지 않습니다");
+	}
+		return httpReq;
+	}
+	
+	function handlerStateChange(){
+		if(httpReq.readyState == 4){ //서버에서 응답이 왔다면
+			if(httpReq.status >= 200 && httpReq.status <300){
+				//UI 구성
+				document.getElementById("txthint").innerHTML= httpReq.responseText;
+			}
+		}
+	}
+	
+	function sendData(str) {
+		httpReq = getInstance();
+		httpReq.onreadystatechange = handlerStateChange; //주의 hadlerStateChange() > X
+
+		httpReq.open("POST","Ex04_word_Search.jsp?word="+str); //form 구성
+
+		httpReq.send();
+	}
+</script>
+
+<body>
+	<h3>단어 검색하기</h3>
+	<form action="">
+		word:<input type="text" id="tet1" onkeyup="sendData(this.value)">
+	</form>
+	<fieldset>
+		<legend>검색단어</legend>
+		<span id="txthint"></span>
+	</fieldset>
+	
+
+
+</body>
+</html>
